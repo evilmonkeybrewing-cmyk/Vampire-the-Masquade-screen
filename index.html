@@ -1,0 +1,615 @@
+
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=IM+Fell+English:ital@0;1&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blood: #6b0f1a;
+    --blood-dark: #3d0008;
+    --blood-mid: #8b1a28;
+    --gold: #b8882a;
+    --gold-light: #d4a84a;
+    --parch: #f0e8d5;
+    --parch-dark: #e0d0b5;
+    --ink: #1a0f08;
+    --ink-mid: #3a2010;
+    --ink-muted: #7a5a3a;
+    --shadow: #2a1a2a;
+    --teal: #1a4a4a;
+    --section-bg: rgba(240,232,213,0.4);
+    --border: rgba(107,15,26,0.25);
+    --border-strong: rgba(107,15,26,0.55);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --blood: #c02030;
+      --blood-dark: #800010;
+      --blood-mid: #a01828;
+      --gold: #c4982a;
+      --gold-light: #d8b050;
+      --parch: #1a1010;
+      --parch-dark: #120c0c;
+      --ink: #e8d8c0;
+      --ink-mid: #c8a870;
+      --ink-muted: #907050;
+      --shadow: #0a0510;
+      --teal: #408080;
+      --section-bg: rgba(20,8,8,0.5);
+      --border: rgba(192,32,48,0.2);
+      --border-strong: rgba(192,32,48,0.5);
+    }
+  }
+
+  body { background: var(--parch); color: var(--ink); font-family: 'IM Fell English', Georgia, serif; }
+
+  .screen { padding: 12px; max-width: 1200px; margin: 0 auto; }
+
+  .screen-header {
+    text-align: center;
+    padding: 12px 0 14px;
+    border-bottom: 2px solid var(--border-strong);
+    margin-bottom: 12px;
+    position: relative;
+  }
+  .screen-header::before, .screen-header::after {
+    content: '✦';
+    color: var(--blood);
+    font-size: 14px;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-60%);
+  }
+  .screen-header::before { left: 0; }
+  .screen-header::after { right: 0; }
+
+  .screen-header h1 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 17px;
+    font-weight: 700;
+    color: var(--blood);
+    letter-spacing: 1px;
+  }
+  .screen-header p {
+    font-size: 13px;
+    color: var(--ink-muted);
+    margin-top: 3px;
+    font-style: italic;
+  }
+
+  .tabs {
+    display: flex;
+    gap: 5px;
+    margin-bottom: 10px;
+    flex-wrap: wrap;
+  }
+  .tab-btn {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 10px;
+    font-weight: 400;
+    padding: 5px 10px;
+    background: var(--section-bg);
+    border: 1px solid var(--border-strong);
+    border-radius: 3px;
+    color: var(--ink-muted);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .tab-btn:hover { color: var(--blood); border-color: var(--blood); }
+  .tab-btn.active { background: var(--blood); color: var(--parch); border-color: var(--blood-dark); }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .col-grid { display: grid; gap: 10px; }
+  .cols-2 { grid-template-columns: 1fr 1fr; }
+  .cols-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+  .card {
+    background: var(--section-bg);
+    border: 1px solid var(--border);
+    border-radius: 5px;
+    padding: 10px 12px;
+  }
+  .card h3 {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 10px;
+    font-weight: 700;
+    color: var(--blood);
+    letter-spacing: 0.5px;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 5px;
+    margin-bottom: 8px;
+  }
+
+  .rule-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 3px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 12.5px;
+    gap: 8px;
+  }
+  .rule-row:last-child { border-bottom: none; }
+  .rule-label { color: var(--ink-mid); font-weight: bold; flex-shrink: 0; font-style: italic; }
+  .rule-val { color: var(--ink); text-align: right; font-size: 12px; }
+
+  .step-list { list-style: none; }
+  .step-list li {
+    display: flex;
+    gap: 8px;
+    padding: 4px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 12.5px;
+    align-items: flex-start;
+    line-height: 1.4;
+  }
+  .step-list li:last-child { border-bottom: none; }
+  .step-num {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 10px;
+    color: var(--parch);
+    background: var(--blood);
+    border-radius: 50%;
+    width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .highlight-box {
+    background: var(--parch-dark);
+    border: 1px solid var(--border-strong);
+    border-left: 3px solid var(--blood);
+    border-radius: 4px;
+    padding: 7px 10px;
+    font-size: 12.5px;
+    color: var(--ink-mid);
+    margin-top: 6px;
+    line-height: 1.5;
+    font-style: italic;
+  }
+  .highlight-box strong { color: var(--blood); font-style: normal; }
+
+  .divider { border: none; border-top: 1px solid var(--border); margin: 7px 0; }
+
+  .note { font-size: 11.5px; color: var(--ink-muted); font-style: italic; margin-top: 4px; line-height: 1.4; }
+
+  .clan-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 5px; }
+  .clan-item {
+    padding: 5px 8px;
+    border-radius: 4px;
+    background: var(--parch-dark);
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--blood-mid);
+  }
+  .clan-name {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 9.5px;
+    font-weight: 700;
+    color: var(--blood);
+    display: block;
+    margin-bottom: 1px;
+  }
+  .clan-disc { color: var(--ink-mid); font-size: 11px; font-style: italic; }
+  .clan-bane { color: var(--ink-muted); font-size: 10.5px; margin-top: 1px; }
+
+  .dice-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 4px 0;
+    border-bottom: 1px dashed var(--border);
+    font-size: 12.5px;
+  }
+  .dice-row:last-child { border-bottom: none; }
+  .die-sym {
+    width: 22px;
+    height: 22px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: bold;
+    flex-shrink: 0;
+    font-family: 'Cinzel Decorative', serif;
+  }
+  .die-black { background: #1a1a1a; color: #e8e8d0; }
+  .die-red { background: var(--blood); color: #f0e0d0; }
+  .die-desc { color: var(--ink-mid); font-size: 12px; line-height: 1.3; }
+
+  .tracker-visual {
+    display: flex;
+    gap: 4px;
+    margin-top: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+  .track-pip {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 1.5px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-family: 'Cinzel Decorative', serif;
+  }
+  .track-pip.filled { background: var(--blood); border-color: var(--blood-dark); color: var(--parch); }
+  .track-pip.gold { background: var(--gold); border-color: var(--gold); color: var(--parch); }
+  .track-arrow { color: var(--blood); font-size: 14px; }
+
+  .data-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .data-table th {
+    font-family: 'Cinzel Decorative', serif;
+    font-size: 9.5px;
+    color: var(--blood);
+    text-align: left;
+    padding: 4px 6px;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .data-table td {
+    padding: 4px 6px;
+    border-bottom: 1px dashed var(--border);
+    color: var(--ink-mid);
+    vertical-align: top;
+    line-height: 1.3;
+  }
+  .data-table tr:last-child td { border-bottom: none; }
+
+  .hunger-track {
+    display: flex;
+    gap: 3px;
+    margin-top: 6px;
+  }
+  .hunger-pip {
+    flex: 1;
+    height: 16px;
+    border-radius: 2px;
+    border: 1px solid var(--border-strong);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 9px;
+    font-family: 'Cinzel Decorative', serif;
+    color: var(--parch);
+  }
+  .h0 { background: var(--teal); }
+  .h1 { background: #884422; }
+  .h2 { background: #994422; }
+  .h3 { background: #aa2222; }
+  .h4 { background: #bb1111; }
+  .h5 { background: var(--blood-dark); }
+
+  @media (max-width: 700px) {
+    .cols-3 { grid-template-columns: 1fr 1fr; }
+  }
+  @media (max-width: 500px) {
+    .cols-2, .cols-3 { grid-template-columns: 1fr; }
+    .clan-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<div class="screen">
+  <div class="screen-header">
+    <h1>V:tM Chapters — Host Reference</h1>
+    <p>Montreal campaign quick rules — coterie, combat, disciplines & the Masquerade</p>
+  </div>
+  <div class="tabs" id="tabs"></div>
+  <div id="panels"></div>
+</div>
+
+<script>
+const panels = {
+  chapter: `
+    <div class="col-grid cols-3">
+      <div class="card">
+        <h3>Chapter Structure</h3>
+        <ul class="step-list">
+          <li><span class="step-num">1</span><span><strong>Setup</strong> — Read chapter booklet setup page. Place tiles, standees, tokens as instructed.</span></li>
+          <li><span class="step-num">2</span><span><strong>Prologue</strong> — Read narrative text aloud from booklet. Follow any instructions (draw cards, set trackers).</span></li>
+          <li><span class="step-num">3</span><span><strong>Play</strong> — Players take turns in initiative order. Follow all booklet branching instructions.</span></li>
+          <li><span class="step-num">4</span><span><strong>Resolution</strong> — When objective met (or failed), read booklet conclusion. Note any campaign consequences.</span></li>
+          <li><span class="step-num">5</span><span><strong>Between Chapters</strong> — Award XP, update character sheets, apply any new effect or item cards gained.</span></li>
+        </ul>
+        <div class="highlight-box"><strong>Round tracker:</strong> Continues counting down even during combat. The scenario can end by objective OR time running out — watch it carefully.</div>
+      </div>
+      <div class="card">
+        <h3>Player Turn Order</h3>
+        <ul class="step-list">
+          <li><span class="step-num">1</span><span><strong>Determine Initiative</strong> — Players and NPCs act in initiative order (shown on tokens/cards). Lowest initiative acts first.</span></li>
+          <li><span class="step-num">2</span><span><strong>Movement</strong> — Move up to your movement value in hexes. May split move before/after action.</span></li>
+          <li><span class="step-num">3</span><span><strong>Action</strong> — Play a combat card, use a discipline, interact with the environment, or investigate.</span></li>
+          <li><span class="step-num">4</span><span><strong>Free actions</strong> — Use items, draw from relevant decks (as instructed), or react to booklet events.</span></li>
+          <li><span class="step-num">5</span><span><strong>End turn</strong> — Resolve any end-of-turn effects. Next initiative token acts.</span></li>
+        </ul>
+        <div class="highlight-box"><strong>Coterie focus:</strong> Unlike Gloomhaven, this is fully cooperative — players are encouraged to coordinate actions openly before each round.</div>
+      </div>
+      <div class="card">
+        <h3>Investigation & Dialogue</h3>
+        <div class="rule-row"><span class="rule-label">Clue tokens</span><span class="rule-val">Collect them to unlock booklet investigation branches</span></div>
+        <div class="rule-row"><span class="rule-label">Skill checks</span><span class="rule-val">Roll dice pool vs. difficulty number to succeed</span></div>
+        <div class="rule-row"><span class="rule-label">Dialogue options</span><span class="rule-val">Multiple-choice answers in booklet — some locked by Skill</span></div>
+        <div class="rule-row"><span class="rule-label">Stealth</span><span class="rule-val">Stealth check to remain hidden; fail = detected by NPC</span></div>
+        <div class="rule-row"><span class="rule-label">NPC attitude</span><span class="rule-val">Neutral / Hostile / Ally — shown on State Card</span></div>
+        <div class="rule-row"><span class="rule-label">NPC From Now On</span><span class="rule-val">Attitude change applies to this chapter only; reset next time</span></div>
+        <hr class="divider">
+        <div class="rule-row"><span class="rule-label">Sealed envelopes</span><span class="rule-val">Open only when explicitly instructed by booklet</span></div>
+        <div class="rule-row"><span class="rule-label">XP (Prologues)</span><span class="rule-val">Up to 8 XP earnable before campaign starts (1 per prologue)</span></div>
+      </div>
+    </div>
+  `,
+  dice: `
+    <div class="col-grid cols-3">
+      <div class="card">
+        <h3>Dice & Skill Checks</h3>
+        <div class="dice-row"><div class="die-sym die-black">B</div><div class="die-desc"><strong>Black die</strong> — standard dice. Count = your Attribute rating.</div></div>
+        <div class="dice-row"><div class="die-sym die-red">R</div><div class="die-desc"><strong>Red (Hunger) die</strong> — replaces black dice equal to your Hunger level.</div></div>
+        <hr class="divider">
+        <div class="rule-row"><span class="rule-label">Success</span><span class="rule-val">Roll 6+ on any die = 1 success</span></div>
+        <div class="rule-row"><span class="rule-label">Critical</span><span class="rule-val">Two 10s together = +2 successes (pair of 10s)</span></div>
+        <div class="rule-row"><span class="rule-label">Messy Critical</span><span class="rule-val">Critical with at least one red die 10 = success + bestial consequence</span></div>
+        <div class="rule-row"><span class="rule-label">Bestial Failure</span><span class="rule-val">No successes + at least one red die 1 = worst outcome</span></div>
+        <div class="rule-row"><span class="rule-label">Willpower reroll</span><span class="rule-val">Spend 1 Willpower → reroll up to 3 regular (black) dice</span></div>
+        <div class="rule-row"><span class="rule-label">Can't reroll</span><span class="rule-val">Hunger dice and Rouse checks cannot be rerolled with Willpower</span></div>
+        <div class="highlight-box" style="margin-top:6px;"><strong>Pool = 0 or less:</strong> Automatically fail. Cannot attempt the check at all.</div>
+      </div>
+      <div class="card">
+        <h3>Dice Pool Construction</h3>
+        <ul class="step-list">
+          <li><span class="step-num">1</span><span>Start with black dice equal to your <strong>Attribute</strong> rating.</span></li>
+          <li><span class="step-num">2</span><span>Add/remove black dice from <strong>effect, combat, or item cards</strong>.</span></li>
+          <li><span class="step-num">3</span><span>Add/remove black dice from any active <strong>Discipline</strong> bonuses.</span></li>
+          <li><span class="step-num">4</span><span>If you have Hunger: swap that many black dice for <strong>red (Hunger) dice</strong>. If Hunger > pool, you roll only red dice.</span></li>
+          <li><span class="step-num">5</span><span>Roll. Add your <strong>Skill automatic successes</strong> to the rolled total.</span></li>
+          <li><span class="step-num">6</span><span>Compare total to <strong>difficulty</strong>. Meet or beat it to succeed.</span></li>
+        </ul>
+        <div class="highlight-box"><strong>Skill automatic successes:</strong> When pool is positive and Hunger = 0, if your skill successes alone meet difficulty, you may skip rolling entirely.</div>
+      </div>
+      <div class="card">
+        <h3>Rouse Checks</h3>
+        <div class="rule-row"><span class="rule-label">What it is</span><span class="rule-val">A single die roll to see if using a Discipline costs you Blood</span></div>
+        <div class="rule-row"><span class="rule-label">When to roll</span><span class="rule-val">Before the Skill check, whenever you activate a Discipline</span></div>
+        <div class="rule-row"><span class="rule-label">Blank symbol</span><span class="rule-val">Hunger increases by 1</span></div>
+        <div class="rule-row"><span class="rule-label">Skull symbol</span><span class="rule-val">Hunger increases by 2</span></div>
+        <div class="rule-row"><span class="rule-label">Ankh symbol</span><span class="rule-val">No Hunger increase — Blood holds</span></div>
+        <div class="rule-row"><span class="rule-label">Discipline still works</span><span class="rule-val">Rouse check result does NOT affect whether Discipline succeeds</span></div>
+        <hr class="divider">
+        <h3 style="margin-top:8px;">Hunger Track</h3>
+        <div class="hunger-track">
+          <div class="hunger-pip h0">0</div>
+          <div class="hunger-pip h1">1</div>
+          <div class="hunger-pip h2">2</div>
+          <div class="hunger-pip h3">3</div>
+          <div class="hunger-pip h4">4</div>
+          <div class="hunger-pip h5">5</div>
+        </div>
+        <p class="note" style="margin-top:6px;">At Hunger 5: All red dice rolled. Frenzy risk is at its highest. Feed immediately if possible. Hunger resets by Feeding (event cards) or booklet instruction.</p>
+      </div>
+    </div>
+  `,
+  combat: `
+    <div class="col-grid cols-3">
+      <div class="card">
+        <h3>Combat Sequence</h3>
+        <ul class="step-list">
+          <li><span class="step-num">1</span><span><strong>Initiative</strong> — Each figure's initiative is set by their card or token value. Lowest acts first.</span></li>
+          <li><span class="step-num">2</span><span><strong>Move</strong> — Move up to your Movement value in hexes (may split before/after action).</span></li>
+          <li><span class="step-num">3</span><span><strong>Play Attack card</strong> — Select a card from your Combat deck. Pay any Discipline Rouse checks first.</span></li>
+          <li><span class="step-num">4</span><span><strong>Target chooses Defense</strong> — Target selects a Defense card from their hand (or NPC uses its own deck).</span></li>
+          <li><span class="step-num">5</span><span><strong>Resolve</strong> — Compare attack and defense results; apply damage and effects per card text.</span></li>
+          <li><span class="step-num">6</span><span><strong>Damage</strong> — Move the ankh slider on the damage tracker rightward. NPC removed when tracker is full.</span></li>
+        </ul>
+        <div class="highlight-box"><strong>Mix cards</strong> can be used as both Attack or Defense, but their added effects (e.g. -1 initiative, Uppercut) do NOT apply when used as Defense.</div>
+      </div>
+      <div class="card">
+        <h3>Combat Cards & Damage</h3>
+        <div class="rule-row"><span class="rule-label">Attack cards</span><span class="rule-val">Used to deal damage and impose effects on NPCs</span></div>
+        <div class="rule-row"><span class="rule-label">Defense cards</span><span class="rule-val">Played in response to incoming attacks to reduce/negate damage</span></div>
+        <div class="rule-row"><span class="rule-label">Mix cards</span><span class="rule-val">Can serve as either Attack or Defense — lose added effects when used as Defense</span></div>
+        <div class="rule-row"><span class="rule-label">NPC damage max</span><span class="rule-val">Shown by player count marker (1P/2P/3P/4P) on State Card</span></div>
+        <div class="rule-row"><span class="rule-label">NPC removed</span><span class="rule-val">When damage tracker hits its maximum for current player count</span></div>
+        <div class="rule-row"><span class="rule-label">Ankh slider</span><span class="rule-val">Track NPC damage by sliding it rightward on the State Card</span></div>
+        <hr class="divider">
+        <div class="rule-row"><span class="rule-label">Line of sight</span><span class="rule-val">Draw line between hexes; Difficult Terrain blocks LOS only if between attacker and target</span></div>
+        <div class="rule-row"><span class="rule-label">Difficult terrain</span><span class="rule-val">Standing ON a Difficult Terrain token does NOT block your own LOS</span></div>
+        <div class="rule-row"><span class="rule-label">Fire spread</span><span class="rule-val">New token placed adjacent to last Fire token, toward nearest vampire</span></div>
+      </div>
+      <div class="card">
+        <h3>Disciplines in Combat</h3>
+        <div class="rule-row"><span class="rule-label">Timing</span><span class="rule-val">Activate Disciplines BEFORE the related Skill check</span></div>
+        <div class="rule-row"><span class="rule-label">Rouse first</span><span class="rule-val">Always roll Rouse check before rolling the combat/skill dice</span></div>
+        <div class="rule-row"><span class="rule-label">Duration</span><span class="rule-val">Most last "End of combat sequence" — check card for specifics</span></div>
+        <div class="rule-row"><span class="rule-label">Fail ≠ lose power</span><span class="rule-val">Failing the Rouse check does NOT prevent the Discipline from working</span></div>
+        <hr class="divider">
+        <div class="rule-row"><span class="rule-label">Celerity (Lv.1)</span><span class="rule-val">Fleetness — bonus movement; lasts until end of sequence</span></div>
+        <div class="rule-row"><span class="rule-label">Dominate (Lv.3)</span><span class="rule-val">Mesmerize — choose NPC <em>in Line of Sight</em> (errata)</span></div>
+        <div class="rule-row"><span class="rule-label">Oblivion (Lv.3)</span><span class="rule-val">Abyss Hunger — affects all NPCs in Line of Sight (errata)</span></div>
+        <div class="highlight-box" style="margin-top:6px;"><strong>Summons:</strong> Move 3 hexes per round. Follow closest enemy like standard NPCs.</div>
+      </div>
+    </div>
+  `,
+  humanity: `
+    <div class="col-grid cols-3">
+      <div class="card">
+        <h3>Humanity Track</h3>
+        <div class="rule-row"><span class="rule-label">Starting value</span><span class="rule-val">7 for most clans; 5 for Lasombra and Hecata</span></div>
+        <div class="rule-row"><span class="rule-label">Decreases</span><span class="rule-val">Immoral choices in booklet, Masquerade breaches, certain booklet events</span></div>
+        <div class="rule-row"><span class="rule-label">Increases</span><span class="rule-val">Acts of compassion or redemption as instructed by booklet</span></div>
+        <div class="rule-row"><span class="rule-label">Per character</span><span class="rule-val">Humanity is tied to your specific character — not transferable</span></div>
+        <div class="rule-row"><span class="rule-label">Switching chars</span><span class="rule-val">New character starts at 7 (or 5). Return to old char = their saved value</span></div>
+        <hr class="divider">
+        <div class="rule-row"><span class="rule-label">High Humanity</span><span class="rule-val">Easier to resist Frenzy; better social outcomes in narrative</span></div>
+        <div class="rule-row"><span class="rule-label">Low Humanity</span><span class="rule-val">More Beast-driven; some Disciplines stronger but Frenzy risk higher</span></div>
+        <div class="highlight-box" style="margin-top:6px;"><strong>Humanity cards:</strong> Some effects are gated by your current Humanity level — read card prerequisites carefully before applying.</div>
+      </div>
+      <div class="card">
+        <h3>The Masquerade</h3>
+        <div class="rule-row"><span class="rule-label">What it is</span><span class="rule-val">The vampire society's oath of secrecy — never reveal Kindred existence to mortals</span></div>
+        <div class="rule-row"><span class="rule-label">Breach #1</span><span class="rule-val">In Sealed Envelope #1 — open only when instructed</span></div>
+        <div class="rule-row"><span class="rule-label">Breach #2</span><span class="rule-val">In scenario booklet "Masquerade Breach 2"</span></div>
+        <div class="rule-row"><span class="rule-label">Breach #3</span><span class="rule-val">In scenario booklet "Masquerade Breach 3"</span></div>
+        <div class="rule-row"><span class="rule-label">Breach #4</span><span class="rule-val">Hidden in Sealed Envelope #2</span></div>
+        <div class="rule-row"><span class="rule-label">Masquerade Tracker</span><span class="rule-val">Shared party tracker — fills with each breach; serious campaign consequences</span></div>
+        <hr class="divider">
+        <div class="highlight-box"><strong>Errata — Chapter E.12:</strong> If you used a Bite card or any Discipline during a specific combat, a Masquerade Breach occurs. Otherwise take the "Loose Ends" effect card. Read carefully!</div>
+      </div>
+      <div class="card">
+        <h3>XP & Progression</h3>
+        <div class="rule-row"><span class="rule-label">XP sources</span><span class="rule-val">Chapter completion, certain booklet choices, completing prologues</span></div>
+        <div class="rule-row"><span class="rule-label">Prologue XP</span><span class="rule-val">1 XP per prologue; max 8 XP before campaign start</span></div>
+        <div class="rule-row"><span class="rule-label">Spend XP on</span><span class="rule-val">New combat cards, Discipline upgrades, attribute/skill increases</span></div>
+        <div class="rule-row"><span class="rule-label">Character swap</span><span class="rule-val">Allowed but can't swap back to previous character mid-campaign</span></div>
+        <div class="rule-row"><span class="rule-label">Boon tokens</span><span class="rule-val">Minor Boons (30 in base box) and Major Boons (5) — spent for favors with NPCs</span></div>
+        <div class="rule-row"><span class="rule-label">Effect cards</span><span class="rule-val">Gained/lost through scenario choices; track carefully — they persist</span></div>
+        <div class="highlight-box" style="margin-top:6px;"><strong>Branching matters:</strong> Some scenarios permanently lock or unlock based on your choices. Read booklet branching instructions aloud so all players understand consequences.</div>
+      </div>
+    </div>
+  `,
+  clans: `
+    <div class="col-grid cols-2">
+      <div class="card">
+        <h3>Playable Clans</h3>
+        <div class="clan-grid">
+          <div class="clan-item">
+            <span class="clan-name">Brujah</span>
+            <span class="clan-disc">Disciplines: Celerity, Potence, Presence</span>
+            <span class="clan-bane">Bane: Easily provoked into Frenzy</span>
+          </div>
+          <div class="clan-item">
+            <span class="clan-name">Ventrue</span>
+            <span class="clan-disc">Disciplines: Dominate, Fortitude, Presence</span>
+            <span class="clan-bane">Bane: Can only feed from specific type of mortal</span>
+          </div>
+          <div class="clan-item">
+            <span class="clan-name">Toreador</span>
+            <span class="clan-disc">Disciplines: Auspex, Celerity, Presence</span>
+            <span class="clan-bane">Bane: Captivated by beauty; may freeze in its presence</span>
+          </div>
+          <div class="clan-item">
+            <span class="clan-name">Gangrel</span>
+            <span class="clan-disc">Disciplines: Animalism, Fortitude, Protean</span>
+            <span class="clan-bane">Bane: Gains animal features after Frenzy</span>
+          </div>
+          <div class="clan-item">
+            <span class="clan-name">Tremere</span>
+            <span class="clan-disc">Disciplines: Auspex, Blood Sorcery, Dominate</span>
+            <span class="clan-bane">Bane: Weakened blood bond effects</span>
+          </div>
+          <div class="clan-item">
+            <span class="clan-name">Nosferatu</span>
+            <span class="clan-disc">Disciplines: Animalism, Obfuscate, Potence</span>
+            <span class="clan-bane">Bane: Monstrous appearance; social penalties</span>
+          </div>
+          <div class="clan-item">
+            <span class="clan-name">Malkavian</span>
+            <span class="clan-disc">Disciplines: Auspex, Dominate, Obfuscate</span>
+            <span class="clan-bane">Bane: Mental illness affects certain checks</span>
+          </div>
+          <div class="clan-item">
+            <span class="clan-name">Caitiff</span>
+            <span class="clan-disc">Disciplines: Variable — no fixed clan disciplines</span>
+            <span class="clan-bane">Bane: No clan protection; Kindred society treats them as outcasts</span>
+          </div>
+        </div>
+        <p class="note" style="margin-top:8px;">Expansion clans: Lasombra, Banu Haqim, Hecata, Ministry — each with unique Disciplines and narrative branches unlocking at specific chapters.</p>
+      </div>
+      <div class="card">
+        <h3>Key Disciplines Reference</h3>
+        <table class="data-table">
+          <tr><th>Discipline</th><th>Core Effect</th><th>Clans</th></tr>
+          <tr><td><em>Auspex</em></td><td>Heightened senses, clairvoyance, detect hidden things</td><td>Toreador, Tremere, Malkavian</td></tr>
+          <tr><td><em>Celerity</em></td><td>Supernatural speed; extra movement and actions</td><td>Brujah, Toreador</td></tr>
+          <tr><td><em>Dominate</em></td><td>Command mortals and weaker Kindred; mind control</td><td>Ventrue, Tremere, Malkavian</td></tr>
+          <tr><td><em>Fortitude</em></td><td>Supernatural toughness; reduce or negate damage</td><td>Ventrue, Gangrel</td></tr>
+          <tr><td><em>Obfuscate</em></td><td>Invisibility; conceal presence, cloud minds</td><td>Nosferatu, Malkavian</td></tr>
+          <tr><td><em>Potence</em></td><td>Supernatural strength; bonus damage</td><td>Brujah, Nosferatu</td></tr>
+          <tr><td><em>Presence</em></td><td>Emotional manipulation; compel or repel others</td><td>Brujah, Ventrue, Toreador</td></tr>
+          <tr><td><em>Animalism</em></td><td>Commune with and control animals</td><td>Nosferatu, Gangrel</td></tr>
+          <tr><td><em>Protean</em></td><td>Shapeshift; mist form, claws, earth meld</td><td>Gangrel</td></tr>
+          <tr><td><em>Blood Sorcery</em></td><td>Blood magic; ranged attacks, curses, wards</td><td>Tremere</td></tr>
+          <tr><td><em>Oblivion</em></td><td>Shadow and death powers; darkness manipulation</td><td>Lasombra, Hecata</td></tr>
+        </table>
+        <div class="highlight-box" style="margin-top:6px;"><strong>Presence errata:</strong> Dread Gaze = Level 1, Entrancement = Level 2 (cards were printed in wrong order).</div>
+      </div>
+    </div>
+  `,
+  setup: `
+    <div class="col-grid cols-3">
+      <div class="card">
+        <h3>Game Setup</h3>
+        <ul class="step-list">
+          <li><span class="step-num">1</span><span>Each player picks a clan and takes the matching <strong>Character Board, pre-filled Character Sheet</strong>, and miniature.</span></li>
+          <li><span class="step-num">2</span><span>Build your <strong>Combat deck</strong> using your base deck + any unlocked cards from XP. Keep Discipline cards separate.</span></li>
+          <li><span class="step-num">3</span><span>Set all <strong>trackers</strong>: Hunger to 0, Willpower and Damage to starting values on your character sheet.</span></li>
+          <li><span class="step-num">4</span><span>Place the <strong>Masquerade Tracker</strong> and <strong>Round Tracker</strong> on the table (set Round Tracker to value shown in booklet).</span></li>
+          <li><span class="step-num">5</span><span>Read the chapter booklet setup page and place <strong>tiles, standees, and tokens</strong> as instructed.</span></li>
+          <li><span class="step-num">6</span><span>Keep all <strong>sealed envelopes</strong> closed until the booklet specifically tells you to open one.</span></li>
+        </ul>
+        <div class="highlight-box"><strong>Round tracker errata (Intro):</strong> Must be set to 10, not 1. Also: Action tokens #1 and #2 shown in initial setup illustration should NOT be placed — they are added later.</div>
+      </div>
+      <div class="card">
+        <h3>Key Trackers</h3>
+        <div class="rule-row"><span class="rule-label">Hunger (0–5)</span><span class="rule-val">Per player. Replaces black dice with red. Increases via Rouse checks or booklet.</span></div>
+        <div class="rule-row"><span class="rule-label">Damage tracker</span><span class="rule-val">Per character. Move slider right when taking damage. If filled = Incapacitated.</span></div>
+        <div class="rule-row"><span class="rule-label">Willpower</span><span class="rule-val">Spend to reroll up to 3 black dice. Cannot reroll Hunger or Rouse dice.</span></div>
+        <div class="rule-row"><span class="rule-label">Humanity (0–10)</span><span class="rule-val">Per character. Moral compass. Affects narrative outcomes and Frenzy resistance.</span></div>
+        <div class="rule-row"><span class="rule-label">Round tracker</span><span class="rule-val">Shared. Counts down each round, including during combat. Scenario ends at 0.</span></div>
+        <div class="rule-row"><span class="rule-label">Masquerade</span><span class="rule-val">Shared. Fills with each breach. Campaign consequences if fully filled.</span></div>
+        <div class="rule-row"><span class="rule-label">NPC damage</span><span class="rule-val">Tracked on State Card with ankh slider. Max HP scales with player count.</span></div>
+        <hr class="divider">
+        <div class="highlight-box"><strong>NPC HP by player count:</strong> Look for the 1P/2P/3P/4P marker on each NPC State Card — that's their maximum damage threshold for your group size. Ally standees also count toward raising the threshold.</div>
+      </div>
+      <div class="card">
+        <h3>Common Rules Reminders</h3>
+        <div class="rule-row"><span class="rule-label">Feeding</span><span class="rule-val">Via Feeding Events booklet or booklet instruction. Resets Hunger.</span></div>
+        <div class="rule-row"><span class="rule-label">Feeding Events</span><span class="rule-val">60 included. Drawn during play for immersive feeding mini-scenes.</span></div>
+        <div class="rule-row"><span class="rule-label">Item cards</span><span class="rule-val">75 different items. Carry/use per character sheet limits.</span></div>
+        <div class="rule-row"><span class="rule-label">Effect cards</span><span class="rule-val">Persistent status effects from narrative choices. Track carefully.</span></div>
+        <div class="rule-row"><span class="rule-label">Sand timer</span><span class="rule-val">Used for specific timed challenges indicated in booklet.</span></div>
+        <div class="rule-row"><span class="rule-label">Success tokens</span><span class="rule-val">Track cumulative successes in multi-part skill challenges.</span></div>
+        <div class="rule-row"><span class="rule-label">Summon tokens</span><span class="rule-val">Used when Disciplines summon creatures; placed per card instruction.</span></div>
+        <div class="highlight-box" style="margin-top:6px;"><strong>Spoiler rule:</strong> Never read ahead in the booklet. The narrative branches are the heart of the game — protect them!</div>
+      </div>
+    </div>
+  `,
+};
+
+const tabs = [
+  { id: 'chapter', label: 'Chapter Structure' },
+  { id: 'dice', label: 'Dice & Hunger' },
+  { id: 'combat', label: 'Combat' },
+  { id: 'humanity', label: 'Humanity & Masquerade' },
+  { id: 'clans', label: 'Clans & Disciplines' },
+  { id: 'setup', label: 'Setup & Trackers' },
+];
+
+const tabContainer = document.getElementById('tabs');
+const panelContainer = document.getElementById('panels');
+
+tabs.forEach((tab, i) => {
+  const btn = document.createElement('button');
+  btn.className = 'tab-btn' + (i === 0 ? ' active' : '');
+  btn.textContent = tab.label;
+  btn.onclick = () => {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('panel-' + tab.id).classList.add('active');
+  };
+  tabContainer.appendChild(btn);
+
+  const panel = document.createElement('div');
+  panel.className = 'panel' + (i === 0 ? ' active' : '');
+  panel.id = 'panel-' + tab.id;
+  panel.innerHTML = panels[tab.id];
+  panelContainer.appendChild(panel);
+});
+</script>
